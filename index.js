@@ -28,7 +28,11 @@ module.exports = function(app, dbconfig) {
     app.use(bodyParser.urlencoded({ extended: false }) );
     app.use(multer({dest: options.uploadDestination }));
 
+    var otherAuth = false;
     var ensureAuthenticated = function(req,res,next) {
+        if( otherAuth ) {
+            return otherAuth(req,res,next);
+        }
         next();
     };
 
@@ -56,7 +60,7 @@ module.exports = function(app, dbconfig) {
     //Export API
     return {
         setAuth:function(fnc) {
-            ensureAuthenticated = fnc;
+            otherAuth = fnc;
         }
     }
 };
